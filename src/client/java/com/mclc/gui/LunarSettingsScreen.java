@@ -500,6 +500,14 @@ public class LunarSettingsScreen extends Screen {
                     if (this.client != null) {
                         if (mod.name.equals("Armor Status")) {
                             this.client.setScreen(new ArmorStatusSettingsScreen(this));
+                        } else if (mod.name.equals("CPS") || mod.name.equals("Ping")
+                                || mod.name.equals("Potion Effects")) {
+                            HUDConfig config = HUDConfig.getInstance();
+                            HUDConfig.ModuleData data = config.getModule(mod.name);
+                            if (data != null) {
+                                data.mode = (data.mode + 1) % 2; // Quick swap mode
+                                config.save();
+                            }
                         }
                     }
                     return true;

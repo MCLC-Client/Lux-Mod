@@ -132,7 +132,7 @@ public abstract class TitleScreenMixin extends net.minecraft.client.gui.screen.S
         for (Element element : elements) {
             if (element instanceof ClickableWidget cw && !(element instanceof ButtonWidget) && cw.visible
                     && cw.getY() > screenHeight / 2) {
-                cw.setY(screenHeight - 10);
+                cw.setY(screenHeight - 24);
             } else if (element instanceof net.minecraft.client.gui.ParentElement parent) {
                 pinOtherWidgets(parent.children(), screenHeight);
             }
@@ -140,7 +140,7 @@ public abstract class TitleScreenMixin extends net.minecraft.client.gui.screen.S
     }
 
     // ────────────────────────────────────────────────────────────────────────────
-    // 2. render() overrides for 1.21.1 legacy elements + Drawing the Custom Logo
+    // 3. render() overrides for 1.21.1 legacy elements + Drawing the Custom Logo
     // ────────────────────────────────────────────────────────────────────────────
 
     // Intercept 1.21.1 LogoDrawer calls and NO-OP them to prevent vanilla logo
@@ -180,7 +180,10 @@ public abstract class TitleScreenMixin extends net.minecraft.client.gui.screen.S
         // Use proper rendering blending to avoid black rectangles
         com.mojang.blaze3d.systems.RenderSystem.enableBlend();
         com.mojang.blaze3d.systems.RenderSystem.defaultBlendFunc();
-        drawCustomLogo(context, this.width, 30);
+
+        // Slightly lower Y offset (40) since the background is immersive and buttons
+        // are lower
+        drawCustomLogo(context, this.width, 40);
         com.mojang.blaze3d.systems.RenderSystem.disableBlend();
     }
 

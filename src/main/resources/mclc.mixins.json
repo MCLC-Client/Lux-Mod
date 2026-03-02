@@ -8,7 +8,10 @@
         "SimpleOptionMixin",
         "SplashTextRendererMixin",
         "TitleScreenMixin",
-        "SplashOverlayMixin"
+        "SplashOverlayMixin",
+        "ClickableWidgetMixin",
+        "ScreenMixin",
+        "MouseMixin"
     ],
     "injectors": {
         "defaultRequire": 0

@@ -55,6 +55,7 @@ public class HUDConfig {
                             // Restore transient variables and update values
                             loadedData.defaultX = defaultData.defaultX;
                             loadedData.defaultY = defaultData.defaultY;
+                            loadedData.defaultMode = defaultData.defaultMode;
                             this.modules.put(entry.getKey(), loadedData);
                         }
                     }
@@ -92,6 +93,7 @@ public class HUDConfig {
         for (ModuleData mod : modules.values()) {
             mod.x = mod.defaultX;
             mod.y = mod.defaultY;
+            mod.mode = mod.defaultMode;
         }
         save();
     }
@@ -101,9 +103,11 @@ public class HUDConfig {
         public boolean enabled;
         public int x;
         public int y;
+        public int mode = 0; // 0 = Standard/Detailed, 1 = Minimal/Compact, etc.
         public boolean showPercentage = false; // Armor Status specific: show % or exact
         public transient int defaultX;
         public transient int defaultY;
+        public transient int defaultMode = 0;
 
         public ModuleData(String name, boolean enabled, int x, int y) {
             this.name = name;
@@ -112,6 +116,8 @@ public class HUDConfig {
             this.y = y;
             this.defaultX = x;
             this.defaultY = y;
+            this.mode = 0;
+            this.defaultMode = 0;
         }
     }
 }

@@ -79,10 +79,14 @@ public class HUDConfigScreen extends Screen {
                 int modWidth;
                 int modHeight;
 
-                // Dynamic sizing
+                // Dynamic sizing based on mode and module
                 if (mod.name.equals("Armor Status")) {
                     modWidth = 60; // Enough for icon + "300/300" text
                     modHeight = 18 * 4; // 4 armor slots
+                } else if (mod.name.equals("CPS") || mod.name.equals("Ping") || mod.name.equals("Potion Effects")) {
+                    String displayText = "[" + mod.name + " (Mode: " + mod.mode + ")]";
+                    modWidth = this.textRenderer.getWidth(displayText) + 10;
+                    modHeight = 16;
                 } else {
                     String displayText = "[" + mod.name + "]";
                     modWidth = this.textRenderer.getWidth(displayText) + 10;
@@ -137,6 +141,10 @@ public class HUDConfigScreen extends Screen {
                         }
                         currentY += 18;
                     }
+                } else if (mod.name.equals("CPS") || mod.name.equals("Ping") || mod.name.equals("Potion Effects")) {
+                    String displayText = "[" + mod.name + " (Mode: " + mod.mode + ")]";
+                    context.fill(modX, modY, modX + modWidth, modY + modHeight, 0xAA000000);
+                    context.drawTextWithShadow(this.textRenderer, displayText, modX + 5, modY + 4, 0xFF55FFFF);
                 } else {
                     // Standard Rendering
                     String displayText = "[" + mod.name + "]";
@@ -185,6 +193,43 @@ public class HUDConfigScreen extends Screen {
                     if (mod.name.equals("Armor Status")) {
                         modWidth = 60;
                         modHeight = 18 * 4;
+                    } else if (mod.name.equals("CPS") || mod.name.equals("Ping") || mod.name.equals("Potion Effects")) {
+                        String displayText = "[" + mod.name + " (Mode: " + mod.mode + ")]";
+                        modWidth = this.textRenderer.getWidth(displayText) + 10;
+                        modHeight = 16;
+                    } else {
+                        String displayText = "[" + mod.name + "]";
+                        modWidth = this.textRenderer.getWidth(displayText) + 10;
+                        modHeight = 16;
+                    }
+
+                    if (mouseX >= mod.x && mouseX <= mod.x + modWidth && mouseY >= mod.y
+                            && mouseY <= mod.y + modHeight) {
+                        clickedMod = mod;
+                        // Calculate drag offset
+                        dragOffsetX = (int) (mouseX - mod.x);
+                        dragOffsetY = (int) (mouseY - mod.y);
+                        break; // Stop at first found (could improve with Z-index sorting later)
+                    }
+                }
+            }
+            if (clickedMod != null) {
+                this.draggingModule = clickedMod;
+                return true;
+            }
+        } else if (button == 1) { // Right click
+            HUDConfig.ModuleData clickedMod = null;
+            for (Map.Entry<String, HUDConfig.ModuleData> entry : config.getModules().entrySet()) {
+                HUDConfig.ModuleData mod = entry.getValue();
+                if (mod.enabled) {
+                    int modWidth;
+                    int modHeight;
+                    if (mod.name.equals("Armor Status")) {
+                        modWidth = 60;
+                        modHeight = 18 * 4;
+                    } else if (mod.name.equals("CPS") || mod.name.equals("Ping") || mod.name.equals("Potion Effects")) {
+                        modWidth = this.textRenderer.getWidth("[" + mod.name + " (Mode: " + mod.mode + ")]") + 10;
+                        modHeight = 16;
                     } else {
                         modWidth = this.textRenderer.getWidth("[" + mod.name + "]") + 10;
                         modHeight = 16;
@@ -192,14 +237,20 @@ public class HUDConfigScreen extends Screen {
                     if (mouseX >= mod.x && mouseX <= mod.x + modWidth && mouseY >= mod.y
                             && mouseY <= mod.y + modHeight) {
                         clickedMod = mod;
-                        // Start drag
-                        this.dragOffsetX = (int) mouseX - mod.x;
-                        this.dragOffsetY = (int) mouseY - mod.y;
+                        break; // Stop at first found (could improve with Z-index sorting later)
                     }
                 }
             }
             if (clickedMod != null) {
-                this.draggingModule = clickedMod;
+                // Toggle mode logic based on the requested modules
+                if (clickedMod.name.equals("CPS")) {
+                    clickedMod.mode = (clickedMod.mode + 1) % 2; // 0 = Text (Left | Right), 1 = Minimal (12 | 14)
+                } else if (clickedMod.name.equals("Ping")) {
+                    clickedMod.mode = (clickedMod.mode + 1) % 2; // 0 = Text (25 ms), 1 = Icon + Bar
+                } else if (clickedMod.name.equals("Potion Effects")) {
+                    clickedMod.mode = (clickedMod.mode + 1) % 2; // 0 = Text Time (03:45), 1 = Icon + Bar
+                }
+                config.save();
                 return true;
             }
         }

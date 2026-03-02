@@ -20,8 +20,21 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MCLCModClient implements ClientModInitializer {
+
+    public static final List<Long> leftClicks = new ArrayList<>();
+    public static final List<Long> rightClicks = new ArrayList<>();
+
+    public static void addLeftClick() {
+        leftClicks.add(net.minecraft.util.Util.getMeasuringTimeMs());
+    }
+
+    public static void addRightClick() {
+        rightClicks.add(net.minecraft.util.Util.getMeasuringTimeMs());
+    }
 
     private static KeyBinding OPEN_GUI_KEY;
     // public static boolean isFpsEnabled = true; // This line is removed as per the
@@ -97,6 +110,29 @@ public class MCLCModClient implements ClientModInitializer {
                 drawContext.drawTextWithShadow(client.textRenderer, fpsText, fpsMod.x, fpsMod.y, 0xFFFFFFFF);
             }
 
+            // CPS Module
+            HUDConfig.ModuleData cpsMod = config.getModule("CPS");
+            if (cpsMod != null && cpsMod.enabled) {
+                long time = net.minecraft.util.Util.getMeasuringTimeMs();
+                leftClicks.removeIf(t -> time - t > 1000);
+                rightClicks.removeIf(t -> time - t > 1000);
+
+                int lCps = leftClicks.size();
+                int rCps = rightClicks.size();
+
+                String cpsText;
+                if (cpsMod.mode == 0) { // Text Mode
+                    cpsText = lCps + " CPS | " + rCps + " CPS";
+                } else { // Minimal Mode
+                    cpsText = lCps + " | " + rCps;
+                }
+
+                // Draw slight dark background card for readability
+                int textWidth = client.textRenderer.getWidth(cpsText);
+                drawContext.fill(cpsMod.x - 2, cpsMod.y - 2, cpsMod.x + textWidth + 2, cpsMod.y + 10, 0x55000000);
+                drawContext.drawTextWithShadow(client.textRenderer, cpsText, cpsMod.x, cpsMod.y, 0xFFFFFFFF);
+            }
+
             // Armor Status
             HUDConfig.ModuleData armorMod = config.getModule("Armor Status");
             if (armorMod != null && armorMod.enabled) {
@@ -151,6 +187,89 @@ public class MCLCModClient implements ClientModInitializer {
                         }
 
                         currentY += 18; // 16px icon + 2px padding
+                    }
+                }
+            }
+
+            // Ping Module
+            HUDConfig.ModuleData pingMod = config.getModule("Ping");
+            if (pingMod != null && pingMod.enabled && client.getNetworkHandler() != null && client.player != null) {
+                net.minecraft.client.network.PlayerListEntry entry = client.getNetworkHandler()
+                        .getPlayerListEntry(client.player.getUuid());
+                if (entry != null) {
+                    int latency = entry.getLatency();
+                    if (pingMod.mode == 0) { // Text Mode
+                        String pingText = "Ping: " + latency + " ms";
+                        int color = latency < 50 ? 0xFF00FF00 : latency < 150 ? 0xFFFFFF00 : 0xFFFF0000;
+                        drawContext.drawTextWithShadow(client.textRenderer, pingText, pingMod.x, pingMod.y, color);
+                    } else { // Icon + Bar Mode
+                        // Draw Ping Icon (using standard connection icon)
+                        drawContext.drawGuiTexture(
+                                net.minecraft.util.Identifier.of("minecraft",
+                                        "icon/ping_" + (latency < 50 ? "5"
+                                                : latency < 100 ? "4"
+                                                        : latency < 150 ? "3" : latency < 300 ? "2" : "1")),
+                                pingMod.x, pingMod.y, 10, 8);
+                        // Draw Mini Bar
+                        int barWidth = 20;
+                        int barHeight = 2;
+                        int fillWidth = Math.max(1, (int) (barWidth * (1.0f - Math.min(latency, 300) / 300.0f)));
+                        int color = latency < 50 ? 0xFF00FF00 : latency < 150 ? 0xFFFFFF00 : 0xFFFF0000;
+                        drawContext.fill(pingMod.x, pingMod.y + 10, pingMod.x + barWidth, pingMod.y + 10 + barHeight,
+                                0xFF444444);
+                        drawContext.fill(pingMod.x, pingMod.y + 10, pingMod.x + fillWidth, pingMod.y + 10 + barHeight,
+                                color);
+                    }
+                }
+            }
+
+            // Potion Effects Module
+            HUDConfig.ModuleData potionMod = config.getModule("Potion Effects");
+            if (potionMod != null && potionMod.enabled && client.player != null) {
+                java.util.Collection<net.minecraft.entity.effect.StatusEffectInstance> effects = client.player
+                        .getStatusEffects();
+                if (!effects.isEmpty()) {
+                    int currentY = potionMod.y;
+                    int currentX = potionMod.x;
+
+                    for (net.minecraft.entity.effect.StatusEffectInstance effect : effects) {
+                        net.minecraft.registry.entry.RegistryEntry<net.minecraft.entity.effect.StatusEffect> effectType = effect
+                                .getEffectType();
+                        net.minecraft.client.texture.Sprite sprite = client.getStatusEffectSpriteManager()
+                                .getSprite(effectType);
+
+                        // Draw Icon
+                        com.mojang.blaze3d.systems.RenderSystem.setShaderTexture(0, sprite.getAtlasId()); // Bind atlas
+                        drawContext.drawSprite(currentX, currentY, 0, 18, 18, sprite); // Draw 18x18 icon
+
+                        if (potionMod.mode == 0) { // Large Mode (Text under each other)
+                            int durationTicks = effect.getDuration();
+                            String timeText = net.minecraft.util.StringHelper.formatTicks(durationTicks,
+                                    client.world.getTickManager().getTickRate());
+                            // Need an amplifier suffix if it is > 0
+                            String nameText = effectType.value().getName().getString()
+                                    + (effect.getAmplifier() > 0 ? " " + (effect.getAmplifier() + 1) : "");
+
+                            drawContext.drawTextWithShadow(client.textRenderer, nameText, currentX + 22, currentY + 1,
+                                    0xFFFFFF);
+                            drawContext.drawTextWithShadow(client.textRenderer, timeText, currentX + 22, currentY + 11,
+                                    0xAAAAAA);
+                            currentY += 22; // Stack vertically
+                        } else { // Compact Mode (Inline icons with mini progress bars)
+                            int durationTicks = effect.getDuration();
+                            int maxDuration = 1200; // Assume 1 minute as visual scale max for compactness if actual max
+                                                    // isn't tracked easily
+                            float perc = Math.min(1.0f, (float) durationTicks / maxDuration);
+                            int barWidth = 18;
+                            int fillWidth = (int) (barWidth * perc);
+
+                            drawContext.fill(currentX, currentY + 20, currentX + barWidth, currentY + 22, 0xFF444444);
+                            drawContext.fill(currentX, currentY + 20, currentX + fillWidth, currentY + 22, 0xFF55FFFF); // Cyan
+                                                                                                                        // bright
+                                                                                                                        // bar
+
+                            currentX += 24; // Stack horizontally
+                        }
                     }
                 }
             }
