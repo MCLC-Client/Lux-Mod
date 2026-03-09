@@ -1,6 +1,6 @@
-package com.mclc.mixin;
+package com.lux.mixin;
 
-import com.mclc.config.HUDConfig;
+import com.lux.config.HUDConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.SimpleOption;
 import org.spongepowered.asm.mixin.Mixin;

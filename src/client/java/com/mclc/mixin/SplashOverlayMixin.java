@@ -1,4 +1,4 @@
-package com.mclc.mixin;
+package com.lux.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
@@ -35,15 +35,15 @@ public abstract class SplashOverlayMixin {
     @Shadow
     private boolean reloading;
 
-    private Consumer<Optional<Throwable>> mclc$exceptionHandler;
+    private Consumer<Optional<Throwable>> lux$exceptionHandler;
 
-    private static final Identifier LOGO = Identifier.of("mclc", "textures/gui/icon.png");
+    private static final Identifier LOGO = Identifier.of("lux", "textures/gui/icon.png");
     private float smoothedProgress = 0.0f;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void initAdjustments(MinecraftClient client, ResourceReload reload,
             Consumer<Optional<Throwable>> exceptionHandler, boolean reloading, CallbackInfo ci) {
-        this.mclc$exceptionHandler = exceptionHandler;
+        this.lux$exceptionHandler = exceptionHandler;
         // Prevent red background flashing, use very dark violet
         client.getFramebuffer().setClearColor(0.039f, 0.016f, 0.071f, 1.0f); // #0a0412
         client.getFramebuffer().clear(MinecraftClient.IS_SYSTEM_MAC);
@@ -90,12 +90,12 @@ public abstract class SplashOverlayMixin {
         if (this.reloadCompleteTime == -1L && this.reload.isComplete() && (!this.reloading || fadeIn >= 2.0F)) {
             try {
                 this.reload.throwException();
-                if (this.mclc$exceptionHandler != null) {
-                    this.mclc$exceptionHandler.accept(Optional.empty());
+                if (this.lux$exceptionHandler != null) {
+                    this.lux$exceptionHandler.accept(Optional.empty());
                 }
             } catch (Throwable var23) {
-                if (this.mclc$exceptionHandler != null) {
-                    this.mclc$exceptionHandler.accept(Optional.of(var23));
+                if (this.lux$exceptionHandler != null) {
+                    this.lux$exceptionHandler.accept(Optional.of(var23));
                 }
             }
             this.reloadCompleteTime = time;

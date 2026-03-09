@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "com.mclc.mixin.client",
+	"package": "com.lux.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"ExampleClientMixin"

@@ -1,4 +1,4 @@
-package com.mclc;
+package com.lux;
 
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.SplashTextRenderer;

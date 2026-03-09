@@ -1,4 +1,4 @@
-package com.mclc.mixin;
+package com.lux.mixin;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -18,7 +18,7 @@ public abstract class ClickableWidgetMixin {
     @Shadow
     public abstract void drawMessage(DrawContext context, TextRenderer textRenderer, int color);
 
-    private float mclcHoverState = 0f;
+    private float luxHoverState = 0f;
 
     @Inject(method = "renderWidget", at = @At("HEAD"), cancellable = true)
     protected void onRenderWidget(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
@@ -33,9 +33,9 @@ public abstract class ClickableWidgetMixin {
 
         boolean hovered = self.isHovered() || self.isFocused();
         if (hovered && self.active) {
-            this.mclcHoverState = MathHelper.clamp(this.mclcHoverState + 0.15f * delta, 0f, 1f);
+            this.luxHoverState = MathHelper.clamp(this.luxHoverState + 0.15f * delta, 0f, 1f);
         } else {
-            this.mclcHoverState = MathHelper.clamp(this.mclcHoverState - 0.15f * delta, 0f, 1f);
+            this.luxHoverState = MathHelper.clamp(this.luxHoverState - 0.15f * delta, 0f, 1f);
         }
 
         int x = self.getX();
@@ -64,13 +64,13 @@ public abstract class ClickableWidgetMixin {
         // Draw border (changes color on hover!)
         int borderColor = 0x55FFFFFF;
         if (self.active) {
-            if (this.mclcHoverState > 0.01f) {
+            if (this.luxHoverState > 0.01f) {
                 // Approximate lerp using alpha and color mixing logic manually
                 // We want to fade from white(ish) to Cyan (0x00FFCC)
-                int r = (int) (0xFF * (1 - this.mclcHoverState) + 0x00 * this.mclcHoverState);
-                int g = (int) (0xFF * (1 - this.mclcHoverState) + 0xFF * this.mclcHoverState);
-                int b = (int) (0xFF * (1 - this.mclcHoverState) + 0xCC * this.mclcHoverState);
-                int a = (int) (0x55 * (1 - this.mclcHoverState) + 0xCC * this.mclcHoverState);
+                int r = (int) (0xFF * (1 - this.luxHoverState) + 0x00 * this.luxHoverState);
+                int g = (int) (0xFF * (1 - this.luxHoverState) + 0xFF * this.luxHoverState);
+                int b = (int) (0xFF * (1 - this.luxHoverState) + 0xCC * this.luxHoverState);
+                int a = (int) (0x55 * (1 - this.luxHoverState) + 0xCC * this.luxHoverState);
                 borderColor = (a << 24) | (r << 16) | (g << 8) | b;
             }
             drawRoundedBorder(context, x, y, width, height, radius, borderColor);
@@ -82,7 +82,7 @@ public abstract class ClickableWidgetMixin {
         int textColor = self.active ? 0xFFFFFF : 0xA0A0A0;
 
         // Very subtle text shift when hovered
-        if (self.active && this.mclcHoverState > 0.5f) {
+        if (self.active && this.luxHoverState > 0.5f) {
             textColor = 0x55FFCC; // Text turns subtle cyan when hovered
         }
 

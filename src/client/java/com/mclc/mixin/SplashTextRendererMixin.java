@@ -1,4 +1,4 @@
-package com.mclc.mixin;
+package com.lux.mixin;
 
 import net.minecraft.client.gui.screen.SplashTextRenderer;
 import org.spongepowered.asm.mixin.Mixin;

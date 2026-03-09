@@ -1,4 +1,4 @@
-package com.mclc.gui;
+package com.lux.gui;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -6,10 +6,10 @@ import net.minecraft.text.Text;
 
 import java.awt.Color;
 
-public class MCLCScreen extends Screen {
+public class LuxScreen extends Screen {
 
-    public MCLCScreen() {
-        super(Text.literal("MCLC Mods"));
+    public LuxScreen() {
+        super(Text.literal("Lux Mods"));
     }
 
     @Override
@@ -22,10 +22,10 @@ public class MCLCScreen extends Screen {
         // Top bar
         fillRoundedRect(context, 10, 10, this.width - 10, 40, 6, 0xAA202020);
 
-        // MCLC Logo Title
+        // Lux Logo Title
         context.getMatrices().push();
         context.getMatrices().scale(1.5f, 1.5f, 1.5f);
-        context.drawTextWithShadow(this.textRenderer, "MCLC", (int) (25 / 1.5f), (int) (18 / 1.5f), 0xFFFFFF);
+        context.drawTextWithShadow(this.textRenderer, "Lux", (int) (25 / 1.5f), (int) (18 / 1.5f), 0xFFFFFF);
         context.getMatrices().pop();
 
         // Top bar buttons

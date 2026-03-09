@@ -1,4 +1,4 @@
-package com.mclc.mixin;
+package com.lux.mixin;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -13,7 +13,7 @@ import net.minecraft.client.gui.screen.TitleScreen;
 @Mixin({ Screen.class, TitleScreen.class })
 public abstract class ScreenMixin {
 
-    private static final net.minecraft.util.Identifier CUSTOM_BACKGROUND = net.minecraft.util.Identifier.of("mclc",
+    private static final net.minecraft.util.Identifier CUSTOM_BACKGROUND = net.minecraft.util.Identifier.of("lux",
             "textures/gui/background.png");
 
     @Inject(method = "renderBackground", at = @At("HEAD"), cancellable = true)

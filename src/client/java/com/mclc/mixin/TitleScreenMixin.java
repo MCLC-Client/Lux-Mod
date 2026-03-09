@@ -1,4 +1,4 @@
-package com.mclc.mixin;
+package com.lux.mixin;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends net.minecraft.client.gui.screen.Screen {
 
-    private static boolean mclcIconsPrinted = false;
+    private static boolean luxIconsPrinted = false;
 
     protected TitleScreenMixin(Text title) {
         super(title);
@@ -168,13 +168,13 @@ public abstract class TitleScreenMixin extends net.minecraft.client.gui.screen.S
         return instance.drawTextWithShadow(textRenderer, text, x, y, color);
     }
 
-    // At the end of rendering the TitleScreen, render our beautiful MCLC Client
+    // At the end of rendering the TitleScreen, render our beautiful Lux Client
     // logo
     @Inject(method = "render", at = @At("TAIL"))
     private void onRenderTail(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (!mclcIconsPrinted) {
-            com.mclc.TestIcon.printIcons();
-            mclcIconsPrinted = true;
+        if (!luxIconsPrinted) {
+            com.lux.TestIcon.printIcons();
+            luxIconsPrinted = true;
         }
 
         // Use proper rendering blending to avoid black rectangles

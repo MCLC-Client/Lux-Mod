@@ -1,4 +1,4 @@
-package com.mclc;
+package com.lux;
 
 import net.minecraft.client.gui.screen.SplashOverlay;
 import java.lang.reflect.Field;

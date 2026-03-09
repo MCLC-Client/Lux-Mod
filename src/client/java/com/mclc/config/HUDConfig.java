@@ -1,8 +1,8 @@
-package com.mclc.config;
+package com.lux.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mclc.MCLCModClient;
+import com.lux.LuxModClient;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
@@ -16,7 +16,7 @@ public class HUDConfig {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(),
-            "mclc_hud.json");
+            "lux_hud.json");
 
     private Map<String, ModuleData> modules = new HashMap<>();
 

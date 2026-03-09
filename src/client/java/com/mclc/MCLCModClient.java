@@ -1,8 +1,8 @@
-package com.mclc;
+package com.lux;
 
-import com.mclc.config.HUDConfig;
-import com.mclc.gui.HUDConfigScreen;
-import com.mclc.gui.LunarSettingsScreen;
+import com.lux.config.HUDConfig;
+import com.lux.gui.HUDConfigScreen;
+import com.lux.gui.LunarSettingsScreen;
 import org.lwjgl.stb.STBImage;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -23,7 +23,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MCLCModClient implements ClientModInitializer {
+public class LuxModClient implements ClientModInitializer {
 
     public static final List<Long> leftClicks = new ArrayList<>();
     public static final List<Long> rightClicks = new ArrayList<>();
@@ -43,10 +43,10 @@ public class MCLCModClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         OPEN_GUI_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.mclc.open_gui",
+                "key.lux.open_gui",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_RIGHT_SHIFT,
-                "category.mclc.general"));
+                "category.lux.general"));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (OPEN_GUI_KEY.wasPressed()) {
@@ -59,9 +59,9 @@ public class MCLCModClient implements ClientModInitializer {
         // Set custom window icon using GLFW + STBImage directly — cross-platform and
         // crash-proof
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-            try (InputStream streamIn = getClass().getResourceAsStream("/assets/mclc/textures/gui/icon.png")) {
+            try (InputStream streamIn = getClass().getResourceAsStream("/assets/lux/textures/gui/icon.png")) {
                 if (streamIn == null) {
-                    System.err.println("MCLC: icon.png not found at /assets/mclc/textures/gui/icon.png");
+                    System.err.println("Lux: icon.png not found at /assets/lux/textures/gui/icon.png");
                     return;
                 }
                 // Read all bytes into a direct ByteBuffer (STBImage requires direct memory)
@@ -74,7 +74,7 @@ public class MCLCModClient implements ClientModInitializer {
                 MemoryUtil.memFree(rawBuf);
 
                 if (pixels == null) {
-                    System.err.println("MCLC: Failed to decode icon PNG: " + STBImage.stbi_failure_reason());
+                    System.err.println("Lux: Failed to decode icon PNG: " + STBImage.stbi_failure_reason());
                     return;
                 }
                 try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -85,13 +85,13 @@ public class MCLCModClient implements ClientModInitializer {
                     GLFW.glfwSetWindowIcon(handle, icons);
                     // Set window title here too — avoids MinecraftClient mixin refmap issues
                     String version = net.minecraft.SharedConstants.getGameVersion().getName();
-                    GLFW.glfwSetWindowTitle(handle, "MCLC Client " + version);
-                    System.out.println("MCLC: Custom window icon set (" + w[0] + "x" + h[0] + ")");
+                    GLFW.glfwSetWindowTitle(handle, "Lux Client " + version);
+                    System.out.println("Lux: Custom window icon set (" + w[0] + "x" + h[0] + ")");
                 } finally {
                     STBImage.stbi_image_free(pixels);
                 }
             } catch (Exception e) {
-                System.err.println("MCLC: Failed to set window icon: " + e.getMessage());
+                System.err.println("Lux: Failed to set window icon: " + e.getMessage());
             }
         });
 

@@ -1,6 +1,6 @@
-package com.mclc.gui;
+package com.lux.gui;
 
-import com.mclc.config.HUDConfig;
+import com.lux.config.HUDConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.DrawContext;
@@ -27,13 +27,13 @@ public class LunarSettingsScreen extends Screen {
 
     private static final int OPTIONS_GEAR_BG = 0xFF2A2C31;
     private static final int OPTIONS_GEAR_HOVER = 0xFF3E4149;
-    private static final Identifier GEAR_TEXTURE = Identifier.of("mclc", "textures/gui/gear.png");
+    private static final Identifier GEAR_TEXTURE = Identifier.of("lux", "textures/gui/gear.png");
     private static final Identifier SETTINGS_SPRITE = Identifier.ofVanilla("icon/settings");
 
     // Map module names to their specific icon textures
     private Identifier getModuleIcon(String moduleName) {
         String cleanName = moduleName.toLowerCase().replace(" ", "_");
-        return Identifier.of("mclc", "textures/gui/" + cleanName + ".png");
+        return Identifier.of("lux", "textures/gui/" + cleanName + ".png");
     }
 
     private static final int TEXT_TITLE = 0xFFF0F2F5;

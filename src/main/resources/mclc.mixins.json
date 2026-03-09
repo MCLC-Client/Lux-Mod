@@ -1,8 +1,8 @@
 {
     "required": true,
-    "package": "com.mclc.mixin",
+    "package": "com.lux.mixin",
     "compatibilityLevel": "JAVA_21",
-    "refmap": "mclc.refmap.json",
+    "refmap": "lux.refmap.json",
     "mixins": [],
     "client": [
         "SimpleOptionMixin",

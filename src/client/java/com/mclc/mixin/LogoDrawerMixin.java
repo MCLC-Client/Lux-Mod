@@ -1,4 +1,4 @@
-package com.mclc.mixin;
+package com.lux.mixin;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LogoDrawer.class)
 public class LogoDrawerMixin {
-    private static boolean mclcIconsPrinted = false;
+    private static boolean luxIconsPrinted = false;
 
     @Inject(method = "draw(Lnet/minecraft/client/gui/DrawContext;IFI)V", at = @At("HEAD"), cancellable = true)
     public void onDrawWithY(DrawContext context, int screenWidth, float alpha, int y, CallbackInfo ci) {
@@ -21,9 +21,9 @@ public class LogoDrawerMixin {
 
     @Inject(method = "draw(Lnet/minecraft/client/gui/DrawContext;IF)V", at = @At("HEAD"), cancellable = true)
     public void onDraw(DrawContext context, int screenWidth, float alpha, CallbackInfo ci) {
-        if (!mclcIconsPrinted) {
-            com.mclc.TestIcon.printIcons();
-            mclcIconsPrinted = true;
+        if (!luxIconsPrinted) {
+            com.lux.TestIcon.printIcons();
+            luxIconsPrinted = true;
         }
         ci.cancel();
         drawCustomLogo(context, screenWidth, 30);
@@ -34,7 +34,7 @@ public class LogoDrawerMixin {
         if (client == null || client.textRenderer == null)
             return;
 
-        // Draw MCLC Client
+        // Draw Lux Client
         Text titleText = Text.literal("")
                 .append(Text.literal("MC").formatted(net.minecraft.util.Formatting.GREEN))
                 .append(Text.literal("LC").formatted(net.minecraft.util.Formatting.AQUA))

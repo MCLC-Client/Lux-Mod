@@ -1,6 +1,6 @@
-package com.mclc.mixin;
+package com.lux.mixin;
 
-import com.mclc.MCLCModClient;
+import com.lux.LuxModClient;
 import net.minecraft.client.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,9 +14,9 @@ public class MouseMixin {
     private void onMouseButton(long window, int button, int action, int mods, CallbackInfo ci) {
         if (action == 1) { // GLFW.GLFW_PRESS
             if (button == 0) {
-                MCLCModClient.addLeftClick();
+                LuxModClient.addLeftClick();
             } else if (button == 1) {
-                MCLCModClient.addRightClick();
+                LuxModClient.addRightClick();
             }
         }
     }
